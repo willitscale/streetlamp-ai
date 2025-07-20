@@ -1,6 +1,6 @@
 <?php
 
-namespace willitscale\StreetlampAi\Model;
+namespace willitscale\Streetlamp\Ai\Models\JsonRpc;
 
 use willitscale\Streetlamp\Attributes\DataBindings\Json\JsonObject;
 use willitscale\Streetlamp\Attributes\DataBindings\Json\JsonProperty;

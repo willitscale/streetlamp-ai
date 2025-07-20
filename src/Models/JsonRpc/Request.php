@@ -1,19 +1,20 @@
 <?php
 
-namespace willitscale\StreetlampAi\Model;
+namespace willitscale\Streetlamp\Ai\Models\JsonRpc;
 
 use JsonSerializable;
 use willitscale\Streetlamp\Attributes\DataBindings\Json\JsonObject;
 use willitscale\Streetlamp\Attributes\DataBindings\Json\JsonProperty;
+use willitscale\Streetlamp\Attributes\Validators\RegExpValidator;
 
 #[JsonObject]
 readonly class Request implements JsonSerializable
 {
     public function __construct(
-        #[JsonProperty] private string $jsonrpc,
+        #[JsonProperty] #[RegExpValidator("/2\.0/")] private string $jsonrpc,
         #[JsonProperty] private string|int $id,
         #[JsonProperty] private string $method,
-        #[JsonProperty(false)] private ?array $params = null
+        #[JsonProperty(false)] private array|object|null $params = null
     ) {
     }
 
@@ -32,7 +33,7 @@ readonly class Request implements JsonSerializable
         return $this->method;
     }
 
-    public function getParams(): ?array
+    public function getParams(): array|object|null
     {
         return $this->params;
     }
