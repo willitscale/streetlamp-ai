@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace willitscale\Streetlamp\Ai\Models\JsonRpc;
 
-use JsonSerializable;
+use willitscale\Streetlamp\Attributes\DataBindings\Json\JsonIgnore;
 use willitscale\Streetlamp\Attributes\DataBindings\Json\JsonObject;
 use willitscale\Streetlamp\Attributes\DataBindings\Json\JsonProperty;
 
 #[JsonObject]
-readonly class Response implements JsonSerializable
+readonly class Response
 {
     public function __construct(
         #[JsonProperty] private string $jsonrpc,
         #[JsonProperty] private string|int $id,
-        #[JsonProperty(false)] private ?array $result,
-        #[JsonProperty(false)] private ?Error $error,
+        #[JsonProperty(false)] #[JsonIgnore(true)] private array|object|null $result,
+        #[JsonProperty(false)] #[JsonIgnore(true)] private ?Error $error,
     ) {
     }
 
@@ -27,7 +29,7 @@ readonly class Response implements JsonSerializable
         return $this->id;
     }
 
-    public function getResult(): ?array
+    public function getResult(): array|object|null
     {
         return $this->result;
     }
@@ -35,10 +37,5 @@ readonly class Response implements JsonSerializable
     public function getError(): ?Error
     {
         return $this->error;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return get_object_vars($this);
     }
 }
