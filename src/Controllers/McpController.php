@@ -2,10 +2,8 @@
 
 namespace willitscale\Streetlamp\Ai\Controllers;
 
-use willitscale\Streetlamp\Ai\Controllers\AuthMiddleware;
-use willitscale\Streetlamp\Ai\Controllers\McpCapabilities;
-use willitscale\Streetlamp\Ai\Controllers\McpCapability;
-use willitscale\Streetlamp\Ai\Controllers\ModelContextProtocol;
+use willitscale\Streetlamp\Ai\Attributes\McpCapability;
+use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
 use willitscale\Streetlamp\Attributes\Middleware;
 
 #[ModelContextProtocol('/mcp')]

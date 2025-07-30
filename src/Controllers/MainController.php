@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace willitscale\Streetlamp\Ai\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
-use willitscale\Streetlamp\Ai\Controllers\AgeModel;
-use willitscale\Streetlamp\Ai\Controllers\TestModel;
 use willitscale\Streetlamp\Attributes\Accepts;
 use willitscale\Streetlamp\Attributes\Controller\RouteController;
 use willitscale\Streetlamp\Attributes\Parameter\BodyParameter;
@@ -16,8 +14,8 @@ use willitscale\Streetlamp\Attributes\Parameter\PathParameter;
 use willitscale\Streetlamp\Attributes\Parameter\PostParameter;
 use willitscale\Streetlamp\Attributes\Parameter\QueryParameter;
 use willitscale\Streetlamp\Attributes\Path;
+use willitscale\Streetlamp\Attributes\Route\Method;
 use willitscale\Streetlamp\Builders\ResponseBuilder;
-use willitscale\Streetlamp\Builders\Route\Method;
 use willitscale\Streetlamp\Enums\HttpMethod;
 use willitscale\Streetlamp\Enums\HttpStatusCode;
 use willitscale\Streetlamp\Enums\MediaType;

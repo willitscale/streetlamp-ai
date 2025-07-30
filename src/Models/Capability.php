@@ -1,8 +1,8 @@
 <?php
 
-namespace willitscale\Streetlamp\Ai\Controllers;
+namespace willitscale\Streetlamp\Ai\Models;
 
-use willitscale\Streetlamp\Ai\Controllers\McpCapabilities;
+use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
 
 readonly class Capability
 {

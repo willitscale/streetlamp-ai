@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace willitscale\Streetlamp\Ai\Controllers;
+namespace willitscale\Streetlamp\Ai\Attributes;
 
 use Attribute;
-use willitscale\Streetlamp\Ai\Controllers\Capability;
-use willitscale\Streetlamp\Ai\Controllers\McpCapabilities;
+use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
+use willitscale\Streetlamp\Ai\Models\Capability;
 use willitscale\Streetlamp\Attributes\AttributeClass;
 use willitscale\Streetlamp\Attributes\AttributeContract;
 use willitscale\Streetlamp\Models\RouteState;

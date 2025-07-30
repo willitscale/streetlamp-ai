@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6a25b29e601fdaedad83fe92a32cee3a",
+    "content-hash": "cc6e555884a014415dc7160369bb42e0",
     "packages": [
         {
             "name": "laravel/serializable-closure",
@@ -517,16 +517,16 @@
         },
         {
             "name": "willitscale/streetlamp",
-            "version": "1.1.6",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/willitscale/streetlamp.git",
-                "reference": "7b37a163e6d3bae707d77b254177be0b24ce17f5"
+                "reference": "5ecd82c2b7fee008dcb65461c85b02f138f82d05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willitscale/streetlamp/zipball/7b37a163e6d3bae707d77b254177be0b24ce17f5",
-                "reference": "7b37a163e6d3bae707d77b254177be0b24ce17f5",
+                "url": "https://api.github.com/repos/willitscale/streetlamp/zipball/5ecd82c2b7fee008dcb65461c85b02f138f82d05",
+                "reference": "5ecd82c2b7fee008dcb65461c85b02f138f82d05",
                 "shasum": ""
             },
             "require": {
@@ -563,9 +563,9 @@
             "description": "A HTTP router application wrapper.",
             "support": {
                 "issues": "https://github.com/willitscale/streetlamp/issues",
-                "source": "https://github.com/willitscale/streetlamp/tree/1.1.6"
+                "source": "https://github.com/willitscale/streetlamp/tree/2.0.0"
             },
-            "time": "2025-07-20T01:30:14+00:00"
+            "time": "2025-07-29T23:03:43+00:00"
         }
     ],
     "packages-dev": [],

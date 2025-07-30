@@ -6,8 +6,8 @@ namespace willitscale\Streetlamp\Ai\Controllers;
 
 use Attribute;
 use ReflectionClass;
-use willitscale\Streetlamp\Ai\Controllers\McpHandler;
-use willitscale\Streetlamp\Ai\Controllers\McpVersion;
+use willitscale\Streetlamp\Ai\Enums\McpVersion;
+use willitscale\Streetlamp\Ai\Handlers\McpHandler;
 use willitscale\Streetlamp\Attributes\AttributeClass;
 use willitscale\Streetlamp\Attributes\AttributeContract;
 use willitscale\Streetlamp\Attributes\RouteContract;
@@ -59,8 +59,6 @@ readonly class ModelContextProtocol implements AttributeContract
             $instance = $attribute->newInstance();
             if ($instance instanceof RouteContract) {
                 $instance->applyToRoute($route);
-            } elseif ($instance instanceof AttributeContract) {
-                $instance->bind($routeState, $attributeClass);
             }
         }
 
@@ -69,8 +67,6 @@ readonly class ModelContextProtocol implements AttributeContract
                 $instance = $attribute->newInstance();
                 if ($instance instanceof RouteContract) {
                     $instance->applyToRoute($route);
-                } elseif ($instance instanceof AttributeContract) {
-                    $instance->bind($routeState, $attributeClass, $method->getName());
                 }
             }
         }

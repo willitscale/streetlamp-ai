@@ -1,6 +1,6 @@
 <?php
 
-namespace willitscale\Streetlamp\Ai\Controllers;
+namespace willitscale\Streetlamp\Ai\Enums;
 
 enum McpCapabilities: string
 {

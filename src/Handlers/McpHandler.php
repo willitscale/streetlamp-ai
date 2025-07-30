@@ -1,10 +1,10 @@
 <?php
 
-namespace willitscale\Streetlamp\Ai\Controllers;
+namespace willitscale\Streetlamp\Ai\Handlers;
 
 use DI\Container;
 use Psr\Http\Message\ResponseInterface;
-use willitscale\Streetlamp\Ai\Controllers\Capability;
+use willitscale\Streetlamp\Ai\Models\Capability;
 use willitscale\Streetlamp\Attributes\Parameter\BodyParameter;
 use willitscale\Streetlamp\Builders\ResponseBuilder;
 use willitscale\Streetlamp\Enums\HttpStatusCode;
@@ -18,8 +18,7 @@ class McpHandler
 {
     public function __construct(
         private RouteState $routeState,
-        private Route $route,
-        private Container $container,
+        private Route $route
     ) {
     }
 

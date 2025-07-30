@@ -2,7 +2,7 @@
     "name": "willitscale/streetlamp-ai",
     "type": "library",
     "require": {
-        "willitscale/streetlamp": "^1.1"
+        "willitscale/streetlamp": "2.0.0"
     },
     "autoload": {
         "psr-4": {
