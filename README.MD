@@ -1,13 +1,11 @@
-<?php
+# Streetlamp AI
 
-namespace willitscale\Streetlamp\Ai\Controllers;
+Attribute router tooling for AI solutions. A support framework for rapidly building MCP servers using attributes in PHP.
 
-use willitscale\Streetlamp\Ai\Attributes\McpCapability;
-use willitscale\Streetlamp\Ai\Attributes\ModelContextProtocol;
-use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
-use willitscale\Streetlamp\Ai\Enums\McpVersion;
-use willitscale\Streetlamp\Attributes\Middleware;
 
+Example usage:
+
+```php
 #[ModelContextProtocol('/mcp', McpVersion::LATEST, 'Streetlamp', '1.0.0', 'Client information')]
 #[Middleware(AuthMiddleware::class)]
 class McpController
@@ -15,10 +13,13 @@ class McpController
     #[McpCapability(McpCapabilities::RESOURCES, true)]
     public function resources(): void
     {
+    // TODO ...
     }
 
     #[McpCapability(McpCapabilities::PROMPTS, true)]
     public function prompts(): void
     {
+    // TODO ...
     }
 }
+```
