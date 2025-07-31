@@ -10,6 +10,8 @@ readonly class Capability
         private string $class,
         private string $method,
         private McpCapabilities $type,
+        private ?bool $listChanged = null,
+        private ?bool $subscribe = null,
         private ?string $alias = null,
     ) {
     }
@@ -32,5 +34,15 @@ readonly class Capability
     public function getType(): McpCapabilities
     {
         return $this->type;
+    }
+
+    public function isListChanged(): ?bool
+    {
+        return $this->listChanged;
+    }
+
+    public function isSubscribe(): ?bool
+    {
+        return $this->subscribe;
     }
 }

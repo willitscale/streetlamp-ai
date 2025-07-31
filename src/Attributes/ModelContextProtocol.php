@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace willitscale\Streetlamp\Ai\Controllers;
+namespace willitscale\Streetlamp\Ai\Attributes;
 
 use Attribute;
 use ReflectionClass;
@@ -28,6 +28,9 @@ readonly class ModelContextProtocol implements AttributeContract
     public function __construct(
         private string $path,
         private McpVersion $version = McpVersion::LATEST,
+        private ?string $serverName = null,
+        private ?string $serverVersion = null,
+        private ?string $instructions = null,
         private ?string $alias = null,
     ) {
     }
@@ -41,16 +44,56 @@ readonly class ModelContextProtocol implements AttributeContract
         $isRoutingClass = $reflectionClass->isSubclassOf(McpHandler::class);
         $routingClass = $isRoutingClass ? $reflectionClass->getName() : McpHandler::class;
 
-        $route = new Route(
+        $attributes = [
+            'class' => $reflectionClass->getName(),
+            'serverName' => $this->serverName,
+            'serverVersion' => $this->serverVersion,
+            'version' => $this->version->value,
+            'alias' => $this->alias
+        ];
+
+        $reflectionClass = $isRoutingClass ? $reflectionClass : new ReflectionClass(McpHandler::class);
+
+        $this->add(
+            $reflectionClass,
+            $attributeClass,
+            $routeState,
             $routingClass,
-            'call',
-            $this->path,
-            HttpMethod::POST,
-            MediaType::APPLICATION_JSON->value,
+            $attributes,
+            'callHttp',
+            MediaType::APPLICATION_JSON
         );
 
-        $route->addAttribute('class', $reflectionClass->getName());
-        $route->addAttribute('alias', $this->alias);
+        $this->add(
+            $reflectionClass,
+            $attributeClass,
+            $routeState,
+            $routingClass,
+            $attributes,
+            'callSse',
+            MediaType::TEXT_EVENT_STREAM
+        );
+    }
+
+    public function add(
+        ReflectionClass $reflectionClass,
+        AttributeClass $attributeClass,
+        RouteState $routeState,
+        string $routingClass,
+        array $attributes,
+        string $callableMethod,
+        MediaType $mediaType,
+    ): void {
+        $route = new Route(
+            $routingClass,
+            $callableMethod,
+            $this->path,
+            HttpMethod::POST,
+            $mediaType->value,
+            [],
+            [],
+            $attributes
+        );
 
         foreach ($attributeClass->getAttributes() as $attribute) {
             if (self::class === $attribute->getName()) {
@@ -71,8 +114,8 @@ readonly class ModelContextProtocol implements AttributeContract
             }
         }
 
-        $parameters = ($isRoutingClass ? $reflectionClass : new ReflectionClass(McpHandler::class))
-            ->getMethod('call')
+        $parameters = $reflectionClass
+            ->getMethod($callableMethod)
             ->getParameters();
 
         foreach ($parameters as $parameter) {

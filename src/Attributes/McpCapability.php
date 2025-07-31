@@ -16,13 +16,10 @@ readonly class McpCapability implements AttributeContract
 {
     public function __construct(
         private McpCapabilities $capability,
+        private ?bool $listChanged = null,
+        private ?bool $subscribe = null,
         private ?string $alias = null,
     ) {
-    }
-
-    public function getCapability(): McpCapabilities
-    {
-        return $this->capability;
     }
 
     public function bind(
@@ -35,6 +32,8 @@ readonly class McpCapability implements AttributeContract
                 $attributeClass->getNamespace() . $attributeClass->getClass(),
                 $method,
                 $this->capability,
+                $this->listChanged,
+                $this->subscribe,
                 $this->alias,
             )
         );
