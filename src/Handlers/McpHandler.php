@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace willitscale\Streetlamp\Ai\Handlers;
 
 use Psr\Http\Message\ResponseInterface;
