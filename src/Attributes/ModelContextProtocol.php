@@ -60,18 +60,7 @@ readonly class ModelContextProtocol implements AttributeContract
             $routeState,
             $routingClass,
             $attributes,
-            'callHttp',
-            MediaType::APPLICATION_JSON
-        );
-
-        $this->add(
-            $reflectionClass,
-            $attributeClass,
-            $routeState,
-            $routingClass,
-            $attributes,
-            'callSse',
-            MediaType::TEXT_EVENT_STREAM
+            'call',
         );
     }
 
@@ -81,15 +70,14 @@ readonly class ModelContextProtocol implements AttributeContract
         RouteState $routeState,
         string $routingClass,
         array $attributes,
-        string $callableMethod,
-        MediaType $mediaType,
+        string $callableMethod
     ): void {
         $route = new Route(
             $routingClass,
             $callableMethod,
             $this->path,
             HttpMethod::POST,
-            $mediaType->value,
+            MediaType::APPLICATION_JSON->value,
             [],
             [],
             $attributes

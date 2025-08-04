@@ -6,26 +6,20 @@ namespace willitscale\Streetlamp\Ai\Models;
 
 use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
 
-readonly class Capability
+class Capability
 {
     public function __construct(
-        private string $class,
-        private string $method,
-        private McpCapabilities $type,
-        private ?bool $listChanged = null,
-        private ?bool $subscribe = null,
-        private ?string $alias = null,
+        private readonly string $class,
+        private readonly McpCapabilities $type,
+        private readonly ?string $alias = null,
+        private array $subCapabilities = [],
+        private array $actions = []
     ) {
     }
 
     public function getClass(): string
     {
         return $this->class;
-    }
-
-    public function getMethod(): string
-    {
-        return $this->method;
     }
 
     public function getAlias(): ?string
@@ -38,13 +32,33 @@ readonly class Capability
         return $this->type;
     }
 
-    public function isListChanged(): ?bool
+    public function getSubCapabilities(): array
     {
-        return $this->listChanged;
+        return $this->subCapabilities;
     }
 
-    public function isSubscribe(): ?bool
+    public function addSubCapability(string $subCapability, string $method): void
     {
-        return $this->subscribe;
+        $this->subCapabilities[$subCapability] = $method;
+    }
+
+    public function getSubCapability(string $subCapability): ?string
+    {
+        return $this->subCapabilities[$subCapability] ?? null;
+    }
+
+    public function getActions(): array
+    {
+        return $this->actions;
+    }
+
+    public function addAction(string $action, string $method): void
+    {
+        $this->actions[$action] = $method;
+    }
+
+    public function getAction(string $action): ?string
+    {
+        return $this->actions[$action] ?? null;
     }
 }

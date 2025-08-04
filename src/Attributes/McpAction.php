@@ -5,18 +5,16 @@ declare(strict_types=1);
 namespace willitscale\Streetlamp\Ai\Attributes;
 
 use Attribute;
-use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
 use willitscale\Streetlamp\Ai\Models\Capability;
 use willitscale\Streetlamp\Attributes\AttributeClass;
 use willitscale\Streetlamp\Attributes\AttributeContract;
 use willitscale\Streetlamp\Models\RouteState;
 
-#[Attribute(Attribute::TARGET_CLASS)]
-readonly class McpCapability implements AttributeContract
+#[Attribute(Attribute::TARGET_METHOD)]
+readonly class McpAction implements AttributeContract
 {
     public function __construct(
-        private McpCapabilities $capability,
-        private ?string $alias = null,
+        private string $action
     ) {
     }
 
@@ -25,12 +23,12 @@ readonly class McpCapability implements AttributeContract
         AttributeClass $attributeClass,
         ?string $method = null
     ): void {
-        $routeState->addAttribute(
-            new Capability(
-                $attributeClass->getNamespace() . $attributeClass->getClass(),
-                $this->capability,
-                $this->alias,
-            )
+        $capability = array_find(
+            $routeState->getAttributes(),
+            fn($attr) => $attr instanceof Capability &&
+                $attr->getClass() === $attributeClass->getNamespace() . $attributeClass->getClass()
         );
+
+        $capability->addAction($this->action, $method);
     }
 }

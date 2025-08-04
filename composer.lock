@@ -517,16 +517,16 @@
         },
         {
             "name": "willitscale/streetlamp",
-            "version": "2.0.1",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/willitscale/streetlamp.git",
-                "reference": "95dde2ec2e70479735850bcf4c7a9c37bc884440"
+                "reference": "cc15c8a706ed4abe2325a395b56c06d28b1e5f48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willitscale/streetlamp/zipball/95dde2ec2e70479735850bcf4c7a9c37bc884440",
-                "reference": "95dde2ec2e70479735850bcf4c7a9c37bc884440",
+                "url": "https://api.github.com/repos/willitscale/streetlamp/zipball/cc15c8a706ed4abe2325a395b56c06d28b1e5f48",
+                "reference": "cc15c8a706ed4abe2325a395b56c06d28b1e5f48",
                 "shasum": ""
             },
             "require": {
@@ -563,9 +563,9 @@
             "description": "A HTTP router application wrapper.",
             "support": {
                 "issues": "https://github.com/willitscale/streetlamp/issues",
-                "source": "https://github.com/willitscale/streetlamp/tree/2.0.1"
+                "source": "https://github.com/willitscale/streetlamp/tree/2.0.5"
             },
-            "time": "2025-07-31T21:08:38+00:00"
+            "time": "2025-08-02T20:27:06+00:00"
         }
     ],
     "packages-dev": [],
