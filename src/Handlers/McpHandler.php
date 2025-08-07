@@ -8,6 +8,7 @@ use DI\Container;
 use Psr\Http\Message\ResponseInterface;
 use stdClass;
 use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
+use willitscale\Streetlamp\Ai\Enums\McpVersion;
 use willitscale\Streetlamp\Ai\Models\Capability;
 use willitscale\Streetlamp\Ai\Requests\McpRequest;
 use willitscale\Streetlamp\Attributes\Parameter\BodyParameter;
@@ -34,7 +35,7 @@ class McpHandler
     public function call(
         #[BodyParameter] Request $request,
         #[HeaderParameter('Accept', true)] string $accept,
-        #[HeaderParameter('MCP-Protocol-Version', true)] string $mcpProtocolVersion,
+        #[HeaderParameter('MCP-Protocol-Version', false)] string $mcpProtocolVersion = McpVersion::LATEST->value,
         #[HeaderParameter('MCP-Session-Id')] ?string $mcpSessionId = null
     ): ResponseInterface {
         list($method, $action) = array_merge(
@@ -58,15 +59,21 @@ class McpHandler
             )
         );
 
-        $response = match ($action) {
+        $method = ('completion' === $method) ? 'completions' : $method;
+
+        $invoke = match ($method) {
             'initialize' => [$this, 'initialize'],
             'notifications' => [$this, 'notifications'],
-            McpCapabilities::RESOURCES,
-            McpCapabilities::PROMPTS,
-            McpCapabilities::LOGGING,
-            McpCapabilities::EXPERIMENTAL,
-            McpCapabilities::COMPLETIONS => $this->capability($method, $action),
+            'ping' => [$this, 'ping'],
+            McpCapabilities::PROMPTS->value,
+            McpCapabilities::RESOURCES->value,
+            McpCapabilities::TOOLS->value,
+            McpCapabilities::LOGGING->value,
+            McpCapabilities::EXPERIMENTAL->value,
+            McpCapabilities::COMPLETIONS->value => $this->capability($method, $action),
         };
+
+        $response = $this->container->call($invoke);
 
         if ($response instanceof ResponseInterface) {
             return $response;
@@ -93,6 +100,11 @@ class McpHandler
             ->build();
     }
 
+    public function ping(): stdClass
+    {
+        return new stdClass();
+    }
+
     private function capability(string $method, ?string $action = null): mixed
     {
         $capability = array_find(
@@ -111,7 +123,7 @@ class McpHandler
     public function initialize(
         Request $request,
         McpRequest $mcpRequest,
-    ): ResponseInterface {
+    ): mixed {
         $capabilities = [];
         $alias = $this->route->getAttribute('alias');
 
@@ -148,21 +160,7 @@ class McpHandler
             $result->instructions = $this->route->getAttribute('instructions');
         }
 
-        $response = new Response(
-            $request->getJsonRpc(),
-            $request->getId(),
-            $result
-        );
-
-        // TODO: This needs to persist somewhere, maybe session or file cache?
-        $mcpSessionId = uniqid('mcp_', true);
-
-        return new ResponseBuilder()
-            ->setData($response)
-            ->setHttpStatusCode(HttpStatusCode::HTTP_OK)
-            ->setContentType(MediaType::APPLICATION_JSON)
-            ->addHeader('MCP-Session-Id', $mcpSessionId)
-            ->build();
+        return $result;
     }
 
     public function notifications(
