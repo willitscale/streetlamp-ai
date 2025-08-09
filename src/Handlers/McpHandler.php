@@ -32,6 +32,14 @@ class McpHandler
     ) {
     }
 
+    public function delete(
+        #[HeaderParameter('MCP-Session-Id')] ?string $mcpSessionId = null
+    ): ResponseInterface {
+        return new ResponseBuilder()
+            ->setHttpStatusCode(HttpStatusCode::HTTP_NO_CONTENT)
+            ->build();
+    }
+
     public function call(
         #[BodyParameter] Request $request,
         #[HeaderParameter('Accept', true)] string $accept,
