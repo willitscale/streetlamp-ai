@@ -4,23 +4,13 @@ declare(strict_types=1);
 
 namespace willitscale\Streetlamp\Ai\Capabilities;
 
-use Psr\Http\Message\ResponseInterface;
 use stdClass;
 use willitscale\Streetlamp\Ai\Attributes\McpCapability;
 use willitscale\Streetlamp\Ai\Attributes\McpAction;
 use willitscale\Streetlamp\Ai\Attributes\McpSubCapability;
 use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
 use willitscale\Streetlamp\Ai\Enums\McpSubCapabilities;
-use willitscale\Streetlamp\Ai\Requests\McpRequest;
-use willitscale\Streetlamp\Builders\ResponseBuilder;
-use willitscale\Streetlamp\Enums\HttpStatusCode;
-use willitscale\Streetlamp\Enums\MediaType;
 use willitscale\Streetlamp\Models\JsonRpc\Request;
-use willitscale\Streetlamp\Models\JsonRpc\Response;
-use willitscale\Streetlamp\Models\ServerSentEvents\Data;
-use willitscale\Streetlamp\Models\ServerSentEvents\Event;
-use willitscale\Streetlamp\Models\ServerSentEvents\Id;
-use willitscale\Streetlamp\Responses\ServerSentEventsDispatcher;
 
 #[McpCapability(McpCapabilities::RESOURCES)]
 class ResourcesCapability
@@ -51,11 +41,10 @@ class ResourcesCapability
         return [
             "resources" => [
                 [
-                    "uri" => "file:///project/src/main.rs",
-                    "name" => "main.rs",
-                    "title" => "Rust Software Application Main File",
-                    "description" => "Primary application entry point",
-                    "mimeType" => "text/x-rust"
+                    "uri" => "/product/1234",
+                    "name" => "Product 1234",
+                    "title" => "My Product",
+                    "description" => "This is a product resource",
                 ]
             ],
             "nextCursor" => "next-page-cursor"
@@ -69,10 +58,9 @@ class ResourcesCapability
             'contents' => [
                 [
                     "uri" => $request->getParams()->uri,
-                    "name" => "main.rs",
-                    "title" => "Rust Software Application Main File",
-                    "mimeType" => "text/x-rust",
-                    "text" => "fn main() {\n    println!(\"Hello world!\");\n}"
+                    "name" => "Product 1234",
+                    "title" => "My Product",
+                    "text" => "Information about Product 1234",
                 ]
             ]
         ];

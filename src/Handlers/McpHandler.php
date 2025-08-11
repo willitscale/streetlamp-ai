@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace willitscale\Streetlamp\Ai\Handlers;
 
 use DI\Container;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use stdClass;
+use willitscale\Streetlamp\Ai\Attributes\McpStream;
 use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
 use willitscale\Streetlamp\Ai\Enums\McpVersion;
 use willitscale\Streetlamp\Ai\Models\Capability;
@@ -37,6 +39,30 @@ class McpHandler
     ): ResponseInterface {
         return new ResponseBuilder()
             ->setHttpStatusCode(HttpStatusCode::HTTP_NO_CONTENT)
+            ->build();
+    }
+
+    public function listen(
+        #[HeaderParameter('Accept', true)] string $accept,
+        #[HeaderParameter('MCP-Protocol-Version', false)] string $mcpProtocolVersion = McpVersion::LATEST->value,
+        #[HeaderParameter('MCP-Session-Id')] ?string $mcpSessionId = null
+    ): ResponseInterface {
+        $stream = array_find(
+            $this->routeState->getAttributes(),
+            fn($attr) => is_array($attr) && isset($attr['type']) && $attr['type'] === McpStream::class
+        );
+
+        $stream = $this->container->make($stream['class']);
+
+        if (!$stream instanceof ServerSentEventsDispatcher) {
+            throw new Exception('Stream handler must implement ServerSentEventsDispatcher');
+        }
+
+        return new ResponseBuilder()
+            ->setStreamDispatcher($stream)
+            ->setHttpStatusCode(HttpStatusCode::HTTP_OK)
+            ->setContentType(MediaType::TEXT_EVENT_STREAM)
+            ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->generateSessionId())
             ->build();
     }
 

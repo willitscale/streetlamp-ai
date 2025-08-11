@@ -75,6 +75,17 @@ readonly class ModelContextProtocol implements AttributeContract
             HttpMethod::DELETE,
             null
         );
+
+        $this->add(
+            $reflectionClass,
+            $attributeClass,
+            $routeState,
+            $routingClass,
+            $attributes,
+            'listen',
+            HttpMethod::GET,
+            null
+        );
     }
 
     public function add(
