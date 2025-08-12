@@ -10,8 +10,9 @@ use willitscale\Streetlamp\Models\RouteState;
 #[Attribute(Attribute::TARGET_CLASS)]
 class McpStream implements AttributeContract
 {
-    public function __construct(private string $class)
-    {
+    public function __construct(
+        private string $class
+    ) {
     }
 
     public function bind(
@@ -19,11 +20,11 @@ class McpStream implements AttributeContract
         AttributeClass $attributeClass,
         ?string $method = null
     ): void {
-        $routeState->addAttribute(
-            [
-                'type' => self::class,
-                'class' => $this->class,
-            ]
-        );
+        $routeState->addAttribute($this);
+    }
+
+    public function getClass(): string
+    {
+        return $this->class;
     }
 }

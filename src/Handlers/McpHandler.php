@@ -8,6 +8,7 @@ use DI\Container;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use stdClass;
+use willitscale\Streetlamp\Ai\Attributes\McpSession;
 use willitscale\Streetlamp\Ai\Attributes\McpStream;
 use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
 use willitscale\Streetlamp\Ai\Enums\McpVersion;
@@ -26,33 +27,53 @@ use willitscale\Streetlamp\Responses\ServerSentEventsDispatcher;
 
 class McpHandler
 {
+    private McpSessionHandler $sessionHandler;
 
     public function __construct(
         private RouteState $routeState,
         private Route $route,
-        private Container $container,
+        private Container $container
     ) {
+        $this->sessionHandler = $this->sessionHandler ?? $this->getSessionHandler();
+    }
+
+    private function getSessionHandler(): McpSessionHandler
+    {
+        $sessionHandler = array_find(
+            $this->routeState->getAttributes(),
+            fn($attr) => $attr instanceof McpSession
+        );
+
+        return $this->container->make(
+            $sessionHandler->getClass() ?? McpSessionFileHandler::class
+        );
     }
 
     public function delete(
         #[HeaderParameter('MCP-Session-Id')] ?string $mcpSessionId = null
     ): ResponseInterface {
+        $this->sessionHandler->delete($mcpSessionId);
         return new ResponseBuilder()
             ->setHttpStatusCode(HttpStatusCode::HTTP_NO_CONTENT)
             ->build();
     }
 
-    public function listen(
-        #[HeaderParameter('Accept', true)] string $accept,
+    public function stream(
         #[HeaderParameter('MCP-Protocol-Version', false)] string $mcpProtocolVersion = McpVersion::LATEST->value,
         #[HeaderParameter('MCP-Session-Id')] ?string $mcpSessionId = null
     ): ResponseInterface {
         $stream = array_find(
             $this->routeState->getAttributes(),
-            fn($attr) => is_array($attr) && isset($attr['type']) && $attr['type'] === McpStream::class
+            fn($attr) => $attr instanceof McpStream
         );
 
-        $stream = $this->container->make($stream['class']);
+        $stream = $this->container->make(
+            $stream->getClass(),
+            [
+                'mcpProtocolVersion' => $mcpProtocolVersion,
+                'mcpSessionId' => $mcpSessionId,
+            ]
+        );
 
         if (!$stream instanceof ServerSentEventsDispatcher) {
             throw new Exception('Stream handler must implement ServerSentEventsDispatcher');
@@ -62,7 +83,7 @@ class McpHandler
             ->setStreamDispatcher($stream)
             ->setHttpStatusCode(HttpStatusCode::HTTP_OK)
             ->setContentType(MediaType::TEXT_EVENT_STREAM)
-            ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->generateSessionId())
+            ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->sessionHandler->getSessionId())
             ->build();
     }
 
@@ -118,7 +139,7 @@ class McpHandler
                 ->setStreamDispatcher($response)
                 ->setHttpStatusCode(HttpStatusCode::HTTP_OK)
                 ->setContentType(MediaType::TEXT_EVENT_STREAM)
-                ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->generateSessionId())
+                ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->sessionHandler->getSessionId())
                 ->build();
         }
 
@@ -130,13 +151,13 @@ class McpHandler
             ))
             ->setHttpStatusCode(HttpStatusCode::HTTP_OK)
             ->setContentType(MediaType::APPLICATION_JSON)
-            ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->generateSessionId())
+            ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->sessionHandler->getSessionId())
             ->build();
     }
 
-    public function ping(): stdClass
+    public function ping(): object
     {
-        return new stdClass();
+        return (object) null;
     }
 
     private function capability(string $method, ?string $action = null): mixed
@@ -204,12 +225,7 @@ class McpHandler
         return new ResponseBuilder()
             ->setHttpStatusCode(HttpStatusCode::HTTP_NO_CONTENT)
             ->setContentType(MediaType::APPLICATION_JSON)
-            ->addHeader('MCP-Session-Id', $mcpRequest->getSessionId())
+            ->addHeader('MCP-Session-Id', $this->sessionHandler->getSessionId())
             ->build();
-    }
-
-    private function generateSessionId(): string
-    {
-        return uniqid('mcp_', true);
     }
 }

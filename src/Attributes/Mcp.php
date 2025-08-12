@@ -8,6 +8,7 @@ use Attribute;
 use ReflectionClass;
 use willitscale\Streetlamp\Ai\Enums\McpVersion;
 use willitscale\Streetlamp\Ai\Handlers\McpHandler;
+use willitscale\Streetlamp\Ai\Handlers\McpSessionHandler;
 use willitscale\Streetlamp\Attributes\AttributeClass;
 use willitscale\Streetlamp\Attributes\AttributeContract;
 use willitscale\Streetlamp\Attributes\RouteContract;
@@ -20,7 +21,7 @@ use willitscale\Streetlamp\Traits\BuildMethodParameters;
 use willitscale\Streetlamp\Traits\BuildMethodRoutes;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-readonly class ModelContextProtocol implements AttributeContract
+readonly class Mcp implements AttributeContract
 {
     use BuildMethodParameters;
     use BuildMethodRoutes;
@@ -72,8 +73,7 @@ readonly class ModelContextProtocol implements AttributeContract
             $routingClass,
             $attributes,
             'delete',
-            HttpMethod::DELETE,
-            null
+            HttpMethod::DELETE
         );
 
         $this->add(
@@ -82,9 +82,8 @@ readonly class ModelContextProtocol implements AttributeContract
             $routeState,
             $routingClass,
             $attributes,
-            'listen',
-            HttpMethod::GET,
-            null
+            'stream',
+            HttpMethod::GET
         );
     }
 
@@ -96,7 +95,7 @@ readonly class ModelContextProtocol implements AttributeContract
         array $attributes,
         string $callableMethod,
         HttpMethod $httpMethod,
-        MediaType|null $mediaType
+        MediaType|null $mediaType = null
     ): void {
         $route = new Route(
             $routingClass,

@@ -19,11 +19,11 @@ readonly class McpSession implements AttributeContract
         AttributeClass $attributeClass,
         ?string $method = null
     ): void {
-        $routeState->addAttribute(
-            [
-                'type' => self::class,
-                'class' => $this->class,
-            ]
-        );
+        $routeState->addAttribute($this);
+    }
+
+    public function getClass(): string
+    {
+        return $this->class;
     }
 }
