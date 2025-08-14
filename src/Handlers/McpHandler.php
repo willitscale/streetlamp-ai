@@ -16,6 +16,7 @@ use willitscale\Streetlamp\Ai\Models\Capability;
 use willitscale\Streetlamp\Ai\Requests\McpRequest;
 use willitscale\Streetlamp\Attributes\Parameter\BodyParameter;
 use willitscale\Streetlamp\Attributes\Parameter\HeaderParameter;
+use willitscale\Streetlamp\Attributes\Validators\RegExpValidator;
 use willitscale\Streetlamp\Builders\ResponseBuilder;
 use willitscale\Streetlamp\Enums\HttpStatusCode;
 use willitscale\Streetlamp\Enums\MediaType;
@@ -44,13 +45,17 @@ class McpHandler
             fn($attr) => $attr instanceof McpSession
         );
 
-        return $this->container->make(
+        $sessionHandler = $this->container->make(
             $sessionHandler->getClass() ?? McpSessionFileHandler::class
         );
+
+        $this->container->set(McpSessionHandler::class, $sessionHandler);
+
+        return $sessionHandler;
     }
 
     public function delete(
-        #[HeaderParameter('MCP-Session-Id')] ?string $mcpSessionId = null
+        #[HeaderParameter('MCP-Session-Id')] #[RegExpValidator('/^[a-z0-9\._]+$/i')] ?string $mcpSessionId = null
     ): ResponseInterface {
         $this->sessionHandler->delete($mcpSessionId);
         return new ResponseBuilder()
@@ -60,7 +65,7 @@ class McpHandler
 
     public function stream(
         #[HeaderParameter('MCP-Protocol-Version', false)] string $mcpProtocolVersion = McpVersion::LATEST->value,
-        #[HeaderParameter('MCP-Session-Id')] ?string $mcpSessionId = null
+        #[HeaderParameter('MCP-Session-Id')] #[RegExpValidator('/^[a-z0-9\._]+$/i')] ?string $mcpSessionId = null
     ): ResponseInterface {
         $stream = array_find(
             $this->routeState->getAttributes(),
@@ -91,12 +96,14 @@ class McpHandler
         #[BodyParameter] Request $request,
         #[HeaderParameter('Accept', true)] string $accept,
         #[HeaderParameter('MCP-Protocol-Version', false)] string $mcpProtocolVersion = McpVersion::LATEST->value,
-        #[HeaderParameter('MCP-Session-Id')] ?string $mcpSessionId = null
+        #[HeaderParameter('MCP-Session-Id')] #[RegExpValidator('/^[a-z0-9\._]+$/i')] ?string $mcpSessionId = null
     ): ResponseInterface {
         list($method, $action) = array_merge(
             explode('/', $request->getMethod(), 2),
             [null, null]
         );
+
+        $this->sessionHandler->start($mcpSessionId);
 
         $this->container->set(
             Request::class,
@@ -139,7 +146,7 @@ class McpHandler
                 ->setStreamDispatcher($response)
                 ->setHttpStatusCode(HttpStatusCode::HTTP_OK)
                 ->setContentType(MediaType::TEXT_EVENT_STREAM)
-                ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->sessionHandler->getSessionId())
+                ->addHeader('MCP-Session-Id', $this->sessionHandler->getSessionId())
                 ->build();
         }
 
@@ -151,7 +158,7 @@ class McpHandler
             ))
             ->setHttpStatusCode(HttpStatusCode::HTTP_OK)
             ->setContentType(MediaType::APPLICATION_JSON)
-            ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->sessionHandler->getSessionId())
+            ->addHeader('MCP-Session-Id', $this->sessionHandler->getSessionId())
             ->build();
     }
 

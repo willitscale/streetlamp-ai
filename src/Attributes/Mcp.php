@@ -8,7 +8,6 @@ use Attribute;
 use ReflectionClass;
 use willitscale\Streetlamp\Ai\Enums\McpVersion;
 use willitscale\Streetlamp\Ai\Handlers\McpHandler;
-use willitscale\Streetlamp\Ai\Handlers\McpSessionHandler;
 use willitscale\Streetlamp\Attributes\AttributeClass;
 use willitscale\Streetlamp\Attributes\AttributeContract;
 use willitscale\Streetlamp\Attributes\RouteContract;

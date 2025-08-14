@@ -7,23 +7,21 @@ class McpSessionFileHandler implements McpSessionHandler
     private string $sessionId;
     private array $data;
     private int $lastModified = 0;
-    // TODO: store changes in memory so if the file changes we only apply those changes
     private array $modified = [];
     private array $delete = [];
 
     public function readIfEmpty(): void
     {
         $file = '/tmp/' . $this->sessionId . '.json';
-
-        if (empty($this->data) || $this->lastModified === filemtime($file)) {
+        if (empty($this->data) || $this->lastModified < filemtime($file)) {
             $this->read($file);
         }
     }
 
     private function read(string $file): void
     {
-        if (!file_exists($file)) {
-            return; // TODO: Throw exception here
+        if (!file_exists($file) || filesize($file) === 0) {
+            file_put_contents($file, json_encode((object)null, JSON_PRETTY_PRINT));
         }
 
         $handler = fopen($file, "r+");
@@ -41,28 +39,43 @@ class McpSessionFileHandler implements McpSessionHandler
     private function write(): void
     {
         $file = '/tmp/' . $this->sessionId . '.json';
-        $handler = fopen($file, "w+");
+        $handler = fopen($file, "rw+");
 
         if(flock($handler, LOCK_EX)) {
-            ftruncate($handler, 0);      // truncate file
-            fwrite($handler, json_encode($this->data, JSON_PRETTY_PRINT));
+            $contents = fread($handler, filesize($file));
+            $data = json_decode(trim($contents), true) ?? [];
+
+            $data = array_filter(
+                $data,
+                fn($i) => !isset($this->delete[$i]),
+                ARRAY_FILTER_USE_KEY
+            );
+
+            $data = array_merge(
+                $data,
+                $this->modified
+            );
+
+            ftruncate($handler, 0);
+            fwrite($handler, json_encode($data, JSON_PRETTY_PRINT));
             fflush($handler);
             flock($handler, LOCK_UN);
         }
 
         fclose($handler);
-
     }
 
     public function start(?string $sessionId = null): void
     {
-        $this->sessionId = $sessionId ?? $this->getSessionId();
+        $this->sessionId = (isset($sessionId) && preg_match('/^[a-z0-9\._]+$/i', $sessionId)) ?
+            $sessionId : uniqid('mcp_', true);
     }
 
     public function set(string $key, mixed $value): void
     {
         $this->readIfEmpty();
         $this->modified[$key] = $value;
+        $this->write();
     }
 
     public function get(string $key): mixed
@@ -75,12 +88,16 @@ class McpSessionFileHandler implements McpSessionHandler
     {
         $this->readIfEmpty();
         $this->delete []= $key;
+        unset($this->modified[$key]);
+        $this->write();
     }
 
     public function clear(): void
     {
         $this->readIfEmpty();
         $this->delete = array_keys($this->data);
+        $this->modified = [];
+        $this->write();
     }
 
     public function has(string $key): bool
@@ -100,6 +117,6 @@ class McpSessionFileHandler implements McpSessionHandler
 
     public function getSessionId(): string
     {
-        return uniqid('mcp_', true);
+        return $this->sessionId;
     }
 }

@@ -10,27 +10,35 @@ use willitscale\Streetlamp\Ai\Attributes\McpAction;
 use willitscale\Streetlamp\Ai\Attributes\McpSubCapability;
 use willitscale\Streetlamp\Ai\Enums\McpCapabilities;
 use willitscale\Streetlamp\Ai\Enums\McpSubCapabilities;
+use willitscale\Streetlamp\Ai\Usecase\McpSubscriptions;
 use willitscale\Streetlamp\Models\JsonRpc\Request;
 
 #[McpCapability(McpCapabilities::RESOURCES)]
 class ResourcesCapability
 {
+    public function __construct(
+        private McpSubscriptions $subscriptions,
+    ) {
+    }
+
     #[McpSubCapability(McpSubCapabilities::SUBSCRIBE)]
-    public function subscribe(): mixed
+    public function subscribe(): void
     {
-        return null;
     }
 
     #[McpAction('subscribe')]
     public function subscribeResource(Request $request): object
     {
-        return new stdClass();
+        // TODO: this should be more generic
+        $this->subscriptions->subscribe('resources');
+        return (object)null;
     }
 
     #[McpAction('unsubscribe')]
     public function unsubscribeResource(Request $request): object
     {
-        return new stdClass();
+        $this->subscriptions->unsubscribe('resources');
+        return (object)null;
     }
 
     #[McpAction('list')]
