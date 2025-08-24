@@ -65,12 +65,14 @@ class McpHandler
 
     public function stream(
         #[HeaderParameter('MCP-Protocol-Version', false)] string $mcpProtocolVersion = McpVersion::LATEST->value,
-        #[HeaderParameter('MCP-Session-Id')] #[RegExpValidator('/^[a-z0-9\._]+$/i')] ?string $mcpSessionId = null
+        #[HeaderParameter('MCP-Session-Id', false)] #[RegExpValidator('/^[a-z0-9\._]+$/i')] ?string $mcpSessionId = null
     ): ResponseInterface {
         $stream = array_find(
             $this->routeState->getAttributes(),
             fn($attr) => $attr instanceof McpStream
         );
+
+        $mcpSessionId = $mcpSessionId ?? $this->sessionHandler->getSessionId();
 
         $stream = $this->container->make(
             $stream->getClass(),
@@ -88,7 +90,7 @@ class McpHandler
             ->setStreamDispatcher($stream)
             ->setHttpStatusCode(HttpStatusCode::HTTP_OK)
             ->setContentType(MediaType::TEXT_EVENT_STREAM)
-            ->addHeader('MCP-Session-Id', $mcpSessionId ?? $this->sessionHandler->getSessionId())
+            ->addHeader('MCP-Session-Id', $mcpSessionId)
             ->build();
     }
 

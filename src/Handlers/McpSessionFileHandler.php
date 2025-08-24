@@ -4,15 +4,20 @@ namespace willitscale\Streetlamp\Ai\Handlers;
 
 class McpSessionFileHandler implements McpSessionHandler
 {
+    private bool $started = false;
     private string $sessionId;
     private array $data;
     private int $lastModified = 0;
     private array $modified = [];
     private array $delete = [];
 
-    public function readIfEmpty(): void
+    private function readIfEmpty(): void
     {
-        $file = '/tmp/' . $this->sessionId . '.json';
+        if (!$this->started) {
+            $this->start();
+        }
+
+        $file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->sessionId . '.json';
         if (empty($this->data) || $this->lastModified < filemtime($file)) {
             $this->read($file);
         }
@@ -38,7 +43,7 @@ class McpSessionFileHandler implements McpSessionHandler
 
     private function write(): void
     {
-        $file = '/tmp/' . $this->sessionId . '.json';
+        $file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->sessionId . '.json';
         $handler = fopen($file, "rw+");
 
         if(flock($handler, LOCK_EX)) {
@@ -69,6 +74,7 @@ class McpSessionFileHandler implements McpSessionHandler
     {
         $this->sessionId = (isset($sessionId) && preg_match('/^[a-z0-9\._]+$/i', $sessionId)) ?
             $sessionId : uniqid('mcp_', true);
+        $this->started = true;
     }
 
     public function set(string $key, mixed $value): void
@@ -117,6 +123,7 @@ class McpSessionFileHandler implements McpSessionHandler
 
     public function getSessionId(): string
     {
+        $this->readIfEmpty();
         return $this->sessionId;
     }
 }
