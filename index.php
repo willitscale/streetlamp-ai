@@ -21,9 +21,9 @@ function dump(...$args): void
     }
 }
 
-//error_log("Headers:" . json_encode(getallheaders(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-//error_log("Request:" . json_encode($_REQUEST, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-//error_log("Body: " . json_encode(file_get_contents('php://input'), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+error_log("Headers:" . json_encode(getallheaders(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+error_log("Request:" . json_encode($_REQUEST, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+error_log("Body: " . json_encode(file_get_contents('php://input'), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
 $config = new RouterConfigBuilder()
     ->setRethrowExceptions(true)

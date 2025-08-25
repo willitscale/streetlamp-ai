@@ -65,7 +65,8 @@ class McpHandler
 
     public function stream(
         #[HeaderParameter('MCP-Protocol-Version', false)] string $mcpProtocolVersion = McpVersion::LATEST->value,
-        #[HeaderParameter('MCP-Session-Id', false)] #[RegExpValidator('/^[a-z0-9\._]+$/i')] ?string $mcpSessionId = null
+        #[HeaderParameter('MCP-Session-Id', false)] #[RegExpValidator('/^[a-z0-9\._]+$/i')] ?string $mcpSessionId = null,
+        #[HeaderParameter('Last-Event-ID', false)] ?string $lastEventId = null
     ): ResponseInterface {
         $stream = array_find(
             $this->routeState->getAttributes(),

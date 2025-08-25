@@ -30,9 +30,9 @@ class McpController implements ServerSentEventsDispatcher
     public function dispatch(): array
     {
         return [
-            new Id('123'),
-            new Event('ping'),
-            new Data(new Response('2.0', 'pong', [])),
+            new Id('1'),
+            new Event('message'),
+            new Data(new Response('2.0', '1', [])),
         ];
     }
 
