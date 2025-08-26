@@ -9,6 +9,7 @@ use willitscale\Streetlamp\Ai\Attributes\McpStream;
 use willitscale\Streetlamp\Ai\Attributes\Mcp;
 use willitscale\Streetlamp\Ai\Enums\McpVersion;
 use willitscale\Streetlamp\Ai\Handlers\McpSessionFileHandler;
+use willitscale\Streetlamp\Ai\Handlers\McpSessionHandler;
 use willitscale\Streetlamp\Models\JsonRpc\Response;
 use willitscale\Streetlamp\Models\ServerSentEvents\Data;
 use willitscale\Streetlamp\Models\ServerSentEvents\Event;
@@ -23,12 +24,17 @@ class McpController implements ServerSentEventsDispatcher
     public function __construct(
         private string $mcpProtocolVersion,
         private string $mcpSessionId,
-        private int $retries = 10
+        private McpSessionHandler $sessionHandler,
+        private int $retries = 10,
     ) {
     }
 
     public function dispatch(): array
     {
+        $subscriptions = $this->sessionHandler->get('subscriptions');
+
+        error_log(json_encode($subscriptions, JSON_PRETTY_PRINT));
+
         return [
             new Id('1'),
             new Event('message'),
