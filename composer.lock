@@ -124,16 +124,16 @@
         },
         {
             "name": "php-di/php-di",
-            "version": "7.0.11",
+            "version": "7.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PHP-DI.git",
-                "reference": "32f111a6d214564520a57831d397263e8946c1d2"
+                "reference": "f88054cc052e40dbe7b383c8817c19442d480352"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/32f111a6d214564520a57831d397263e8946c1d2",
-                "reference": "32f111a6d214564520a57831d397263e8946c1d2",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/f88054cc052e40dbe7b383c8817c19442d480352",
+                "reference": "f88054cc052e40dbe7b383c8817c19442d480352",
                 "shasum": ""
             },
             "require": {
@@ -181,7 +181,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-DI/PHP-DI/issues",
-                "source": "https://github.com/PHP-DI/PHP-DI/tree/7.0.11"
+                "source": "https://github.com/PHP-DI/PHP-DI/tree/7.1.1"
             },
             "funding": [
                 {
@@ -193,7 +193,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-03T07:45:57+00:00"
+            "time": "2025-08-16T11:10:48+00:00"
         },
         {
             "name": "psr/container",
@@ -517,16 +517,16 @@
         },
         {
             "name": "willitscale/streetlamp",
-            "version": "2.0.7",
+            "version": "2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/willitscale/streetlamp.git",
-                "reference": "55c4131ddf4150be196b4e0ca604bb56ba7b44c3"
+                "reference": "d3a173f06435dbe455cc12011062f89fd1e4a73c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willitscale/streetlamp/zipball/55c4131ddf4150be196b4e0ca604bb56ba7b44c3",
-                "reference": "55c4131ddf4150be196b4e0ca604bb56ba7b44c3",
+                "url": "https://api.github.com/repos/willitscale/streetlamp/zipball/d3a173f06435dbe455cc12011062f89fd1e4a73c",
+                "reference": "d3a173f06435dbe455cc12011062f89fd1e4a73c",
                 "shasum": ""
             },
             "require": {
@@ -563,9 +563,9 @@
             "description": "A HTTP router application wrapper.",
             "support": {
                 "issues": "https://github.com/willitscale/streetlamp/issues",
-                "source": "https://github.com/willitscale/streetlamp/tree/2.0.7"
+                "source": "https://github.com/willitscale/streetlamp/tree/2.0.8"
             },
-            "time": "2025-08-11T21:12:25+00:00"
+            "time": "2025-08-26T00:11:06+00:00"
         }
     ],
     "packages-dev": [],

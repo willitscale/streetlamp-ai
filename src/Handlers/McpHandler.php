@@ -26,7 +26,7 @@ use willitscale\Streetlamp\Models\Route;
 use willitscale\Streetlamp\Models\RouteState;
 use willitscale\Streetlamp\Responses\ServerSentEventsDispatcher;
 
-class McpHandler
+readonly class McpHandler
 {
     private McpSessionHandler $sessionHandler;
 

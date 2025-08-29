@@ -33,8 +33,6 @@ class McpController implements ServerSentEventsDispatcher
     {
         $subscriptions = $this->sessionHandler->get('subscriptions');
 
-        error_log(json_encode($subscriptions, JSON_PRETTY_PRINT));
-
         return [
             new Id('1'),
             new Event('message'),

@@ -17,6 +17,8 @@ class McpSessionFileHandler implements McpSessionHandler
             $this->start();
         }
 
+        error_log(sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->sessionId . '.json');
+
         $file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->sessionId . '.json';
         if (empty($this->data) || $this->lastModified < filemtime($file)) {
             $this->read($file);
@@ -62,6 +64,7 @@ class McpSessionFileHandler implements McpSessionHandler
             );
 
             ftruncate($handler, 0);
+            rewind($handler);
             fwrite($handler, json_encode($data, JSON_PRETTY_PRINT));
             fflush($handler);
             flock($handler, LOCK_UN);
